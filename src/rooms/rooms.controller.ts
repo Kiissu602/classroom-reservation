@@ -1,11 +1,20 @@
-import { Controller, Post, Req } from '@nestjs/common';
-import { CreateRoomDto } from './dto/create-room.dto';
-import { RoomsService } from './rooms.service';
-import { Request } from 'express';
+import { Controller, Get, Post, Req } from "@nestjs/common";
+import { Request } from "express";
 
-@Controller('rooms')
+import { CreateRoomDto } from "./dto/create-room.dto";
+import { Room } from "./interfaces/room.interface";
+
+import { RoomsService } from "./rooms.service";
+
+@Controller("rooms")
 export class RoomsController {
   constructor(private roomsService: RoomsService) {}
+
+  @Get()
+  async getRoom(@Req() request: Request): Promise<Room> {
+    const room = request.body.number;
+    return await this.roomsService.getRoom(room);
+  }
 
   @Post()
   async createRoom(@Req() request: Request): Promise<CreateRoomDto> {
