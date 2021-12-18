@@ -2,7 +2,7 @@ import { Model } from "mongoose";
 import { Injectable, Inject } from "@nestjs/common";
 
 import { Room } from "./interfaces/room.interface";
-import { CreateRoomDto } from "./dto/create-room.dto";
+import { CreateRoomDto } from "./dto/room.dto";
 
 @Injectable()
 export class RoomsService {

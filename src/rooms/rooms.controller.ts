@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Req } from "@nestjs/common";
 import { Request } from "express";
 
-import { CreateRoomDto } from "./dto/create-room.dto";
+import { CreateRoomDto } from "./dto/room.dto";
 import { Room } from "./interfaces/room.interface";
 
 import { RoomsService } from "./rooms.service";
