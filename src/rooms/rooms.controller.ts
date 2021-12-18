@@ -8,17 +8,21 @@ import { RoomsService } from "./rooms.service";
 
 @Controller("rooms")
 export class RoomsController {
-  constructor(private roomsService: RoomsService) {}
+  constructor(private _roomsService: RoomsService) {}
 
-  @Get()
+  @Get("by_number")
   async getRoom(@Req() request: Request): Promise<Room> {
-    const room = request.body.number;
-    return await this.roomsService.getRoom(room);
+    return await this._roomsService.getRoom(request.body.number);
+  }
+
+  @Get("all_rooms")
+  async getRooms(): Promise<Room[]> {
+    return await this._roomsService.getRooms();
   }
 
   @Post()
-  async createRoom(@Req() request: Request): Promise<CreateRoomDto> {
+  async createRoom(@Req() request: Request): Promise<Room> {
     const room = request.body as CreateRoomDto;
-    return await this.roomsService.createRoom(room);
+    return await this._roomsService.createRoom(room);
   }
 }

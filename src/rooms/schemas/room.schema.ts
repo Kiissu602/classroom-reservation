@@ -1,7 +1,11 @@
-import * as mongoose from 'mongoose';
+import * as mongoose from "mongoose";
 
 export const RoomSchema = new mongoose.Schema({
   number: String,
   quantity: Number,
-  size: Number,
+  type: {
+    type: String,
+    enum: ["Lecture", "Laboratory"],
+    default: "Lecture",
+  },
 });
