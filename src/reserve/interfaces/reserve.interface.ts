@@ -7,4 +7,5 @@ export interface Reserve extends Document {
   start: Date;
   end: Date;
   description: string;
+  cancelled: boolean;
 }
