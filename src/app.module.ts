@@ -6,10 +6,18 @@ import { RoomsService } from "./rooms/rooms.service";
 import { roomsProviders } from "./rooms/room.providers";
 import { DatabaseModule } from "./database/database.module";
 import { ReserveController } from "./reserve/reserve.controller";
+import { ReserveService } from "./reserve/reserve.service";
+import { reserveProviders } from "./reserve/reserve.providers";
 
 @Module({
   imports: [DatabaseModule],
   controllers: [AppController, RoomsController, ReserveController],
-  providers: [AppService, RoomsService, ...roomsProviders],
+  providers: [
+    AppService,
+    RoomsService,
+    ReserveService,
+    ...roomsProviders,
+    ...reserveProviders,
+  ],
 })
 export class AppModule {}
