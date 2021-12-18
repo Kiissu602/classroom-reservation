@@ -6,4 +6,5 @@ export interface Reserve extends Document {
   reservedBy: string;
   start: Date;
   end: Date;
+  description: string;
 }

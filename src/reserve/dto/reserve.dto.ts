@@ -4,4 +4,5 @@ export class createReserve {
   reservedBy: string;
   start: Date;
   end: Date;
+  description: string;
 }

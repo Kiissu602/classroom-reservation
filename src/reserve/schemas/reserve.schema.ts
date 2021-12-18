@@ -6,4 +6,5 @@ export const ReserveSchema = new mongoose.Schema({
   reservedBy: String,
   start: Date,
   end: Date,
+  description: String,
 });
