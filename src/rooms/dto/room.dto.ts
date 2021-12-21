@@ -1,10 +1,10 @@
 export class CreateRoomDto {
   number: string;
   quantity: number;
-  type: number;
+  type: roomType;
 }
 
 export enum roomType {
-  Lecture = "Lecture",
-  Laboratory = "Laboratory",
+  Lecture,
+  Laboratory,
 }

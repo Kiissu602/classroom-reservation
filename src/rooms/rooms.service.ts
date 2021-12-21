@@ -15,9 +15,9 @@ export class RoomsService {
     const room = {
       number: createRoomDto.number,
       quantity: createRoomDto.quantity,
-      type:
-        createRoomDto.type == 0 ? r.roomType.Lecture : r.roomType.Laboratory,
+      type: r.roomType[createRoomDto.type].toString(),
     } as Room;
+
     const createRoom = new this.roomModel(room);
     return await createRoom.save();
   }

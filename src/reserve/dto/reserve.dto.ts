@@ -13,3 +13,9 @@ export class editReserveDto {
   end: Date;
   description: string;
 }
+
+export class reserveData {
+  roomNumber: string;
+  start: Date;
+  end: Date;
+}

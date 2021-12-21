@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req } from "@nestjs/common";
+import { Controller, Get, Param, Post, Req } from "@nestjs/common";
 import { Request } from "express";
 
 import { CreateRoomDto } from "./dto/room.dto";
@@ -10,9 +10,9 @@ import { RoomsService } from "./rooms.service";
 export class RoomsController {
   constructor(private _roomsService: RoomsService) {}
 
-  @Get("by_number")
-  async getRoom(@Req() request: Request): Promise<Room> {
-    return await this._roomsService.getRoom(request.body.number);
+  @Get(":number")
+  async getRoom(@Param("number") number: string): Promise<Room> {
+    return await this._roomsService.getRoom(number);
   }
 
   @Get("all_rooms")
