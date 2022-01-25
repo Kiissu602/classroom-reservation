@@ -2,17 +2,19 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Model } from "mongoose";
 import { Reserve } from "./interfaces/reserve.interface";
 import * as rs from "./dto/reserve.dto";
+import { Room } from "src/rooms/interfaces/room.interface";
 
 @Injectable()
 export class ReserveService {
   constructor(
     @Inject("RESERVE_MODEL")
-    private _reserveModel: Model<Reserve>
+    private _reserveModel: Model<Reserve>,
+    private _roomModel: Model<Room>
   ) {}
 
   async createReserve(createReserveDto: rs.createReserveDto): Promise<string> {
     const reservedata: rs.reserveData = {
-      roomNumber: createReserveDto.roomNumber,
+      roomId: createReserveDto.roomId,
       start: createReserveDto.start,
       end: createReserveDto.end,
     };
@@ -32,12 +34,11 @@ export class ReserveService {
   }
 
   async editReserve(editReserveDto: rs.editReserveDto): Promise<string> {
-    const roomNumber = (
-      await this._reserveModel.findById(editReserveDto.reserveId)
-    ).roomNumber;
+    const reserve = await this._reserveModel.findById(editReserveDto.reserveId);
+    const room = await this._roomModel.findById(reserve.roomId);
 
     const reserveData: rs.reserveData = {
-      roomNumber: roomNumber,
+      roomId: room._id,
       start: editReserveDto.start,
       end: editReserveDto.end,
     };
@@ -87,7 +88,7 @@ export class ReserveService {
     reserveDate: rs.reserveData
   ): Promise<boolean> {
     const reserve = await this._reserveModel.exists({
-      roomNumber: reserveDate.roomNumber,
+      roomId: reserveDate.roomId,
       start: reserveDate.start,
       end: reserveDate.end,
     });

@@ -2,10 +2,10 @@ import { Document } from "mongoose";
 
 export interface Reserve extends Document {
   roomId: string;
-  roomNumber: string;
   reservedBy: string;
-  start: Date;
-  end: Date;
+  reserveDate: Date;
+  start: string;
+  end: string;
   description: string;
   cancelled: boolean;
 }

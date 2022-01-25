@@ -1,6 +1,7 @@
 export class CreateRoomDto {
   number: string;
   quantity: number;
+  image: string;
   type: roomType;
 }
 

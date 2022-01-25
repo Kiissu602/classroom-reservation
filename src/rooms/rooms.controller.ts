@@ -1,5 +1,18 @@
-import { Controller, Get, Param, Post, Req } from "@nestjs/common";
-import { Request } from "express";
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Req,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { Request, Response } from "express";
+import { diskStorage } from "multer";
+import * as path from "path";
 
 import { CreateRoomDto } from "./dto/room.dto";
 import { Room } from "./interfaces/room.interface";
@@ -10,19 +23,37 @@ import { RoomsService } from "./rooms.service";
 export class RoomsController {
   constructor(private _roomsService: RoomsService) {}
 
-  @Get(":number")
-  async getRoom(@Param("number") number: string): Promise<Room> {
-    return await this._roomsService.getRoom(number);
-  }
-
-  @Get("all_rooms")
-  async getRooms(): Promise<Room[]> {
-    return await this._roomsService.getRooms();
+  @Get("all")
+  async getRooms(@Res() response: Response) {
+    const allRooms = await this._roomsService.getRooms();
+    response.send(allRooms);
   }
 
   @Post()
-  async createRoom(@Req() request: Request): Promise<Room> {
-    const room = request.body as CreateRoomDto;
+  @UseInterceptors(
+    FileInterceptor("image", {
+      storage: diskStorage({
+        destination: "./src/assets/",
+        filename: (req, file, callBack) => {
+          const fileName =
+            path.parse(file.originalname).name.replace(/\s/g, "") + Date.now();
+          const extension = path.parse(file.originalname).ext;
+          callBack(null, `${fileName}${extension}`);
+        },
+      }),
+    })
+  )
+  async createRoom(
+    @Req() request: Request,
+    @UploadedFile() image
+  ): Promise<Room> {
+    let room = request.body as CreateRoomDto;
+    room.image = image.path;
     return await this._roomsService.createRoom(room);
+  }
+
+  @Get("/number:number")
+  async getRoom(@Param("number") number: string): Promise<Room> {
+    return await this._roomsService.getRoom(number);
   }
 }

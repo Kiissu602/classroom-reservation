@@ -18,16 +18,17 @@ import { ReserveService } from "./reserve.service";
 @Controller("reserve")
 export class ReserveController {
   constructor(private _reserveService: ReserveService) {}
+
+  @Get("all")
+  async getAllReserve(@Res() response: Response) {
+    const allReserve = await this._reserveService.getAllReserve();
+    response.send(allReserve);
+  }
+
   @Get(":id")
   async getReserve(@Param("id") id: string, @Res() response: Response) {
     const reserved = await this._reserveService.getReserveById(id);
     response.send(reserved);
-  }
-
-  @Get("all-reserve")
-  async getAllReserve(@Res() response: Response) {
-    const allReserve = await this._reserveService.getAllReserve();
-    response.send(allReserve);
   }
 
   @Get("bynumber:number")

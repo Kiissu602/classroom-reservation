@@ -1,7 +1,7 @@
 export class createReserveDto {
   roomId: string;
-  roomNumber: string;
   reservedBy: string;
+  reservedDate: string;
   start: Date;
   end: Date;
   description: string;
@@ -15,7 +15,7 @@ export class editReserveDto {
 }
 
 export class reserveData {
-  roomNumber: string;
+  roomId: string;
   start: Date;
   end: Date;
 }

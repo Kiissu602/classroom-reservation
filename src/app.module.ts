@@ -8,16 +8,26 @@ import { DatabaseModule } from "./database/database.module";
 import { ReserveController } from "./reserve/reserve.controller";
 import { ReserveService } from "./reserve/reserve.service";
 import { reserveProviders } from "./reserve/reserve.providers";
+import { LongTermReservedController } from "./long-term-reserved/long-term-reserved.controller";
+import { LongTermReservedService } from "./long-term-reserved/long-term-reserved.service";
+import { longTermReservedProviders } from "./long-term-reserved/long-term-reserved.providers";
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [AppController, RoomsController, ReserveController],
+  controllers: [
+    AppController,
+    RoomsController,
+    ReserveController,
+    LongTermReservedController,
+  ],
   providers: [
     AppService,
     RoomsService,
     ReserveService,
     ...roomsProviders,
     ...reserveProviders,
+    LongTermReservedService,
+    ...longTermReservedProviders,
   ],
 })
 export class AppModule {}

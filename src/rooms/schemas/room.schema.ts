@@ -8,4 +8,5 @@ export const RoomSchema = new mongoose.Schema({
     enum: ["Lecture", "Laboratory"],
     default: "Lecture",
   },
+  image: String,
 });
