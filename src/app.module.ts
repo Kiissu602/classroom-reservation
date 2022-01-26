@@ -24,9 +24,9 @@ import { longTermReservedProviders } from "./long-term-reserved/long-term-reserv
     AppService,
     RoomsService,
     ReserveService,
+    LongTermReservedService,
     ...roomsProviders,
     ...reserveProviders,
-    LongTermReservedService,
     ...longTermReservedProviders,
   ],
 })
