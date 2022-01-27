@@ -31,16 +31,16 @@ export class RoomsController {
     response.send(allRooms);
   }
 
-  @Get("roomImage/:image")
+  @Get("room-image/:image")
   findRoomImage(@Param("image") image, @Res() res): Observable<Object> {
-    return of(res.sendFile(join(process.cwd(), "/assets/" + image)));
+    return of(res.sendFile(join(process.cwd(), "src/images/" + image)));
   }
 
   @Post()
   @UseInterceptors(
     FileInterceptor("image", {
       storage: diskStorage({
-        destination: "./src/assets/",
+        destination: "./src/images/",
         filename: (req, file, callBack) => {
           const fileName =
             path.parse(file.originalname).name.replace(/\s/g, "") + Date.now();
@@ -55,7 +55,7 @@ export class RoomsController {
     @UploadedFile() image
   ): Promise<Room> {
     let room = request.body as CreateRoomDto;
-    room.image = image.path;
+    room.image = image.filename;
     return await this._roomsService.createRoom(room);
   }
 
