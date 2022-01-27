@@ -9,6 +9,7 @@ export class ReserveService {
   constructor(
     @Inject("RESERVE_MODEL")
     private _reserveModel: Model<Reserve>,
+    @Inject("ROOM_MODEL")
     private _roomModel: Model<Room>
   ) {}
 
