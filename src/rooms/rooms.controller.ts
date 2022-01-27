@@ -13,6 +13,8 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { Request, Response } from "express";
 import { diskStorage } from "multer";
 import * as path from "path";
+import { join } from "path";
+import { Observable, of } from "rxjs";
 
 import { CreateRoomDto } from "./dto/room.dto";
 import { Room } from "./interfaces/room.interface";
@@ -27,6 +29,11 @@ export class RoomsController {
   async getRooms(@Res() response: Response) {
     const allRooms = await this._roomsService.getRooms();
     response.send(allRooms);
+  }
+
+  @Get("roomImage/:image")
+  findRoomImage(@Param("image") image, @Res() res): Observable<Object> {
+    return of(res.sendFile(join(process.cwd(), "/assets/" + image)));
   }
 
   @Post()
