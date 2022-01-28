@@ -24,7 +24,10 @@ import { RoomsService } from "./rooms.service";
 @Controller("rooms")
 export class RoomsController {
   constructor(private _roomsService: RoomsService) {}
-
+  @Get()
+  room(@Res() response: Response) {
+    response.send("rooms");
+  }
   @Get("all")
   async getRooms(@Res() response: Response) {
     const allRooms = await this._roomsService.getRooms();
