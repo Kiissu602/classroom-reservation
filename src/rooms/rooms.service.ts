@@ -4,6 +4,8 @@ import { Injectable, Inject } from "@nestjs/common";
 import { Room } from "./interfaces/room.interface";
 import * as r from "./dto/room.dto";
 import { create } from "domain";
+import { Reserve } from "src/reserve/interfaces/reserve.interface";
+import { elementAt } from "rxjs";
 
 @Injectable()
 export class RoomsService {
@@ -29,8 +31,4 @@ export class RoomsService {
       await this._roomModel.find().exec()
     ).sort((a, b) => (a.number > b.number ? 1 : -1));
   }
-
-  // async getFreeRoom(searchRoomDto: r.SearchRoomDto):Promise<Room[]> {
-
-  // }
 }

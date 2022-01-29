@@ -25,38 +25,17 @@ export class ReserveController {
     response.send(allReserve);
   }
 
-  @Get(":id")
-  async getReserve(@Param("id") id: string, @Res() response: Response) {
-    const reserved = await this._reserveService.getReserveById(id);
-    response.send(reserved);
-  }
-
-  @Get("bynumber:number")
-  async getReserveByNumber(
-    @Param("number") number: string,
-    @Res() response: Response
-  ) {
-    const reserved = await this._reserveService.getReserveByRoomNumber(number);
-    response.send(reserved);
+  @Get("freeTime")
+  async getFreeTime(@Req() request: Request, @Res() response: Response) {
+    const req = request.body as rs.getFreeTimeDto;
+    const freetime = await this._reserveService.getFreeTime(req);
+    response.send(freetime);
   }
 
   @Post()
   async createReserve(@Req() request: Request, @Res() response: Response) {
-    const createReserve = request.body as rs.createReserveDto;
-    const res = await this._reserveService.createReserve(createReserve);
+    const createReserve = request.body as rs.createReservesDto;
+    const res = await this._reserveService.createReservation(createReserve);
     response.status(HttpStatus.OK).send(res);
-  }
-
-  @Put()
-  async editReserve(@Req() request: Request, @Res() response: Response) {
-    const editReserve = request.body as rs.editReserveDto;
-
-    const edited = await this._reserveService.editReserve(editReserve);
-    response.send(edited);
-  }
-
-  @Delete(":id")
-  async cancelReserve(@Param("id") id: string): Promise<Reserve> {
-    return await this._reserveService.cancelReserve(id);
   }
 }

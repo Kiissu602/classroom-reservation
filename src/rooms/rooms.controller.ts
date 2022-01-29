@@ -10,7 +10,7 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { diskStorage } from "multer";
 import * as path from "path";
 import { join } from "path";
@@ -29,11 +29,6 @@ export class RoomsController {
   async getRooms(@Res() response: Response) {
     const allRooms = await this._roomsService.getRooms();
     response.send(allRooms);
-  }
-
-  @Get("freeRoom")
-  async getFreeRoom(@Req() request: Request, @Res() response: Response) {
-
   }
 
   @Get("room-image/:image")
@@ -63,6 +58,4 @@ export class RoomsController {
     room.image = image.filename;
     return await this._roomsService.createRoom(room);
   }
-
-
 }

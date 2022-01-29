@@ -5,5 +5,5 @@ export interface Room extends Document {
   quantity: number;
   type: string;
   image: string;
-  reserved: [Reserve];
+  reserved: Reserve[];
 }
