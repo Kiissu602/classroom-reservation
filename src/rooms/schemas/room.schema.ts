@@ -9,4 +9,5 @@ export const RoomSchema = new mongoose.Schema({
     default: "Lecture",
   },
   image: String,
+  reserve: [],
 });

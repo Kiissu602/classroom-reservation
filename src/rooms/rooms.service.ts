@@ -18,7 +18,6 @@ export class RoomsService {
       quantity: createRoomDto.quantity,
       image: createRoomDto.image,
       type: r.roomType[createRoomDto.type].toString(),
-      reserved: [],
     } as Room;
 
     const createRoom = new this._roomModel(room);
@@ -26,7 +25,9 @@ export class RoomsService {
   }
 
   async getRooms(): Promise<Room[]> {
-    return await this._roomModel.find().exec();
+    return await (
+      await this._roomModel.find().exec()
+    ).sort((a, b) => (a.number > b.number ? 1 : -1));
   }
 
   // async getFreeRoom(searchRoomDto: r.SearchRoomDto):Promise<Room[]> {
