@@ -45,6 +45,6 @@ export class getFreeTimeDto {
 }
 
 export class freeTimeDto {
-  data: string;
+  text: string;
   value: reservePreriod;
 }

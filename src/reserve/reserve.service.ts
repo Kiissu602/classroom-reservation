@@ -71,7 +71,7 @@ export class ReserveService {
 
     for (let j = 0; j < alllFreeTime.length; j++) {
       const time: rs.freeTimeDto = {
-        data: `${alllFreeTime[j].start} - ${alllFreeTime[j].end}`,
+        text: `${alllFreeTime[j].start} - ${alllFreeTime[j].end}`,
         value: { start: alllFreeTime[j].start, end: alllFreeTime[j].end },
       };
       freeTime.push(time);
