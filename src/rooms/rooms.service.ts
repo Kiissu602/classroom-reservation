@@ -18,17 +18,18 @@ export class RoomsService {
       quantity: createRoomDto.quantity,
       image: createRoomDto.image,
       type: r.roomType[createRoomDto.type].toString(),
+      reserved: [],
     } as Room;
 
     const createRoom = new this._roomModel(room);
     return await createRoom.save();
   }
 
-  async getRoom(number: string): Promise<Room> {
-    return await this._roomModel.findOne({ number: number }).exec();
-  }
-
   async getRooms(): Promise<Room[]> {
     return await this._roomModel.find().exec();
   }
+
+  // async getFreeRoom(searchRoomDto: r.SearchRoomDto):Promise<Room[]> {
+
+  // }
 }

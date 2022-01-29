@@ -24,14 +24,16 @@ import { RoomsService } from "./rooms.service";
 @Controller("rooms")
 export class RoomsController {
   constructor(private _roomsService: RoomsService) {}
-  @Get()
-  room(@Res() response: Response) {
-    response.send("rooms");
-  }
+
   @Get("all")
   async getRooms(@Res() response: Response) {
     const allRooms = await this._roomsService.getRooms();
     response.send(allRooms);
+  }
+
+  @Get("freeRoom")
+  async getFreeRoom(@Req() request: Request, @Res() response: Response) {
+
   }
 
   @Get("room-image/:image")
@@ -62,8 +64,5 @@ export class RoomsController {
     return await this._roomsService.createRoom(room);
   }
 
-  @Get("/number:number")
-  async getRoom(@Param("number") number: string): Promise<Room> {
-    return await this._roomsService.getRoom(number);
-  }
+
 }

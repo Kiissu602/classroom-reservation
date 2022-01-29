@@ -9,3 +9,11 @@ export enum roomType {
   Lecture,
   Laboratory,
 }
+
+export class SearchRoomDto {
+  number?: string;
+  date?: Date;
+  start?: string;
+  end?: string;
+  type?: roomType;
+}
