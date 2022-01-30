@@ -48,3 +48,12 @@ export class freeTimeDto {
   text: string;
   value: reservePreriod;
 }
+
+export class getReserveDto {
+  date: Date;
+  name: string;
+  roomNumber: string;
+  times: string[];
+  _ids: string[];
+  cancelled: boolean;
+}

@@ -44,9 +44,40 @@ export class ReserveService {
     return await reserve.save();
   }
 
-  async getAllReserve(): Promise<Reserve[]> {
-    const allReserve = await this._reserveModel.find().exec();
-    return allReserve;
+  async getAllReserve(): Promise<rs.getReserveDto[]> {
+    const allReserve = await this._reserveModel
+      .find()
+      .sort({ _id: 1 })
+      .limit(100);
+    let reserved = [];
+
+    for (const element of allReserve) {
+      const found = reserved.some(
+        (el) => el.date.getTime() === element.date.getTime()
+      );
+
+      if (found) {
+        const idx = reserved.findIndex(
+          (el) => el.date.getTime() === element.date.getTime()
+        );
+
+        reserved[idx].times.push(`${element.start} - ${element.end}`);
+        reserved[idx]._ids.push(element._id);
+      } else {
+        const room = await this._roomModel.findById(element.roomId);
+        const reserve: rs.getReserveDto = {
+          date: element.date,
+          name: element.by,
+          roomNumber: room.number,
+          times: [`${element.start} - ${element.end}`],
+          _ids: [element._id],
+          cancelld: element.cancelled,
+        };
+        reserved.push(reserve);
+      }
+    }
+
+    return reserved;
   }
 
   async getFreeTime(requireTime: rs.getFreeTimeDto): Promise<rs.freeTimeDto[]> {
