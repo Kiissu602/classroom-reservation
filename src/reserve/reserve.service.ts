@@ -15,7 +15,7 @@ export class ReserveService {
 
   async createReservation(
     createReserveDto: rs.createReservesDto
-  ): Promise<[boolean, string[]]> {
+  ): Promise<string> {
     const reservedata: rs.reserveData = {
       roomId: createReserveDto.roomId,
       date: createReserveDto.date,
@@ -24,12 +24,16 @@ export class ReserveService {
 
     const alreadyReserve = await this._alreadyReserved(reservedata);
     if (alreadyReserve.length > 0) {
-      return [false, alreadyReserve];
+      let failMessage = "Fail";
+      for (let i = 0; i < alreadyReserve.length; i++) {
+        failMessage += `${alreadyReserve[i]}`;
+      }
+      return `${failMessage} is already reserved`;
     }
 
     const reserved = await this._createReserve(createReserveDto);
 
-    return [true, reserved];
+    return "Success";
   }
 
   async cancelReserve(id: string): Promise<Reserve> {
