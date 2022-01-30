@@ -71,6 +71,7 @@ export class ReserveService {
           roomNumber: room.number,
           times: [`${element.start} - ${element.end}`],
           _ids: [element._id],
+          description: element.description,
           cancelled: element.cancelled,
         };
         reserved.push(reserve);

@@ -55,5 +55,6 @@ export class getReserveDto {
   roomNumber: string;
   times: string[];
   _ids: string[];
+  description: string;
   cancelled: boolean;
 }
