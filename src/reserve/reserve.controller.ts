@@ -38,4 +38,11 @@ export class ReserveController {
     const res = await this._reserveService.createReservation(createReserve);
     response.status(HttpStatus.OK).send(res);
   }
+
+  @Put("Cancel")
+  async cancelReserve(@Req() request: Request, @Res() response: Response) {
+    const cancelId = request.body as string[];
+    const res = await this._reserveService.cancelReserve(cancelId);
+    response.send(res);
+  }
 }

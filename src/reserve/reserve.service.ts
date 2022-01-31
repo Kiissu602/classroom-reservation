@@ -36,12 +36,20 @@ export class ReserveService {
     return "Success";
   }
 
-  async cancelReserve(id: string): Promise<Reserve> {
-    const reserve = await this._reserveModel.findById(id).exec();
+  async cancelReserve(reserves: string[]): Promise<string> {
+    for (let i = 0; i < reserves.length; i++) {
+      const cancelled = await this._reserveModel.findOneAndUpdate(
+        { _id: reserves[i] },
+        { cancelled: true }
+      );
+      const room = await this._roomModel.findById(cancelled.roomId);
+      room.reserved[
+        room.reserved.findIndex((r) => r._id == cancelled._id)
+      ].cancelled = true;
+      Promise.all(room.save(), cancelled.save());
+    }
 
-    reserve.cancelled = true;
-
-    return await reserve.save();
+    return "Success";
   }
 
   async getAllReserve(): Promise<rs.getReserveDto[]> {
