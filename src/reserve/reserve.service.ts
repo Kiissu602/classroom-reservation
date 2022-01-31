@@ -38,9 +38,8 @@ export class ReserveService {
 
   async cancelReserve(cancelData: rs.cancelReserveDto): Promise<string> {
     if (
-      (await (
-        await this._reserveModel.findById(cancelData._ids[0])
-      ).password) != cancelData.password
+      (await this._reserveModel.findById(cancelData._ids[0])).password !=
+      cancelData.password
     ) {
       return "Fail wrong password";
     }
