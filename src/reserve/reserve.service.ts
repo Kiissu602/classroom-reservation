@@ -57,7 +57,7 @@ export class ReserveService {
       room.reserved[idx].cancelled = true;
       const updatedRoom = await this._roomModel.findOneAndUpdate(
         { _id: cancelled.roomId },
-        { reserved:  room.reserved }
+        { reserved: room.reserved }
       );
       await updatedRoom.save();
     }
