@@ -48,13 +48,18 @@ export class ReserveService {
         { _id: cancelData._ids[i] },
         { cancelled: true }
       );
-      const room = await this._roomModel.findById(cancelled.roomId);
-      room.reserved[
-        room.reserved.findIndex((r) => r._id == cancelled._id)
-      ].cancelled = true;
-      
-      await room.save();
       await cancelled.save();
+      const room = await this._roomModel.findById(cancelled.roomId);
+
+      const idx = room.reserved.findIndex(
+        (r) => r._id.toString() == cancelled.id.toString()
+      );
+      room.reserved[idx].cancelled = true;
+      const updatedRoom = await this._roomModel.findOneAndUpdate(
+        { _id: cancelled.roomId },
+        { reserved:  room.reserved }
+      );
+      await updatedRoom.save();
     }
 
     return "Success";
