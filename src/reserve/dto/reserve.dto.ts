@@ -58,3 +58,8 @@ export class getReserveDto {
   description: string;
   cancelled: boolean;
 }
+
+export class cancelReserveDto {
+  password: string;
+  _ids: string[];
+}

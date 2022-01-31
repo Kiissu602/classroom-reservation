@@ -41,7 +41,7 @@ export class ReserveController {
 
   @Put("Cancel")
   async cancelReserve(@Req() request: Request, @Res() response: Response) {
-    const cancelId = request.body as string[];
+    const cancelId = request.body as rs.cancelReserveDto;
     const res = await this._reserveService.cancelReserve(cancelId);
     response.send(res);
   }
