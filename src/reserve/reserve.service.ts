@@ -55,7 +55,7 @@ export class ReserveService {
   async getAllReserve(): Promise<rs.getReserveDto[]> {
     const allReserve = await this._reserveModel
       .find()
-      .sort({ _id: -1 })
+      .sort({ $natural: -1 })
       .limit(100);
     let reserved = [];
 
