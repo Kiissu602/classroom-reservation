@@ -52,7 +52,9 @@ export class ReserveService {
       room.reserved[
         room.reserved.findIndex((r) => r._id == cancelled._id)
       ].cancelled = true;
-      Promise.all(room.save(), cancelled.save());
+      
+      await room.save();
+      await cancelled.save();
     }
 
     return "Success";
