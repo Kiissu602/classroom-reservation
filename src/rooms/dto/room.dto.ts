@@ -17,4 +17,3 @@ export class SearchRoomDto {
   end?: string;
   type?: roomType;
 }
-
