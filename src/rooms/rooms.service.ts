@@ -38,12 +38,14 @@ export class RoomsService {
     if (data.number == null && data.type == null) {
       rooms = await this._roomModel.find();
     } else if (data.number != null && data.type == null) {
-      rooms = await this._roomModel.find({ number: { $regex: data.number } });
+      rooms = await this._roomModel.find({
+        number: { $regex: data.number.toUpperCase() },
+      });
     } else if (data.number == null && data.type != null) {
       rooms = await this._roomModel.find({ type: r.roomType[data.type] });
     } else {
       rooms = await this._roomModel.find({
-        number: { $regex: data.number },
+        number: { $regex: data.number.toUpperCase() },
         type: r.roomType[data.type],
       });
     }
