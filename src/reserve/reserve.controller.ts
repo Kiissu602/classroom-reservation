@@ -1,6 +1,5 @@
 import {
   Controller,
-  Delete,
   Get,
   HttpStatus,
   Param,
@@ -12,7 +11,7 @@ import {
 import { Request, Response } from "express";
 
 import * as rs from "./dto/reserve.dto";
-import { Reserve } from "./interfaces/reserve.interface";
+
 import { ReserveService } from "./reserve.service";
 
 @Controller("reserve")
@@ -25,9 +24,13 @@ export class ReserveController {
     response.send(allReserve);
   }
 
-  @Get("freeTime")
-  async getFreeTime(@Req() request: Request, @Res() response: Response) {
-    const req = request.body as rs.getFreeTimeDto;
+  @Get("freeTime/:id/:date")
+  async getFreeTime(
+    @Param("id") id: string,
+    @Param("date") date: Date,
+    @Res() response: Response
+  ) {
+    const req: rs.getFreeTimeDto = { id: id, date: date };
     const freetime = await this._reserveService.getFreeTime(req);
     response.send(freetime);
   }

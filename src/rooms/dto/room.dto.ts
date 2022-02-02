@@ -11,9 +11,9 @@ export enum roomType {
 }
 
 export class SearchRoomDto {
-  number?: string;
-  date?: Date;
-  start?: string;
-  end?: string;
-  type?: roomType;
+  number?: string | null;
+  date?: Date | null;
+  start?: string | null;
+  end?: string | null;
+  type?: roomType | null;
 }

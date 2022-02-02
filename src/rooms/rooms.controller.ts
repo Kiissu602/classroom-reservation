@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  HttpStatus,
   Param,
   Post,
   Req,
@@ -10,7 +9,7 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import { diskStorage } from "multer";
 import * as path from "path";
 import { join } from "path";
@@ -31,9 +30,23 @@ export class RoomsController {
     response.send(allRooms);
   }
 
-  @Get("search")
-  async searchRoom(@Req() request: Request, @Res() response: Response) {
-    const data = request.body as SearchRoomDto;
+  @Get("search/:number/:date/:start/:end/:type")
+  async searchRoom(
+    @Param("number") number: string,
+    @Param("date") date: Date,
+    @Param("start") start: string,
+    @Param("end") end: string,
+    @Param("type") type: number,
+    @Res() response: Response
+  ) {
+    const data: SearchRoomDto = {
+      number: number == "null" ? null : number,
+      date: date.toString() == "null" ? null : date,
+      start: start == "undefined" ? null : start,
+      end: end == "undefined" ? null : end,
+      type: type.toString() == "null" ? null : type,
+    };
+
     const rooms = await this._roomsService.searchRoom(data);
     response.send(rooms);
   }

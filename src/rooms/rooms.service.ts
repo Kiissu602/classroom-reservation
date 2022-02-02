@@ -3,7 +3,6 @@ import { Injectable, Inject } from "@nestjs/common";
 
 import { Room } from "./interfaces/room.interface";
 import * as r from "./dto/room.dto";
-import { roomsProviders } from "./room.providers";
 import { Reserve } from "src/reserve/interfaces/reserve.interface";
 
 @Injectable()
@@ -38,14 +37,15 @@ export class RoomsService {
     if (data.number == null && data.type == null) {
       rooms = await this._roomModel.find();
     } else if (data.number != null && data.type == null) {
+      data.number = data.number.toUpperCase();
       rooms = await this._roomModel.find({
-        number: { $regex: data.number.toUpperCase() },
+        number: { $regex: data.number },
       });
     } else if (data.number == null && data.type != null) {
       rooms = await this._roomModel.find({ type: r.roomType[data.type] });
     } else {
       rooms = await this._roomModel.find({
-        number: { $regex: data.number.toUpperCase() },
+        number: { $regex: data.number },
         type: r.roomType[data.type],
       });
     }
