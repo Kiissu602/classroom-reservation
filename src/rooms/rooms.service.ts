@@ -55,8 +55,10 @@ export class RoomsService {
       if (data.date != null && data.start != null) {
         found = rooms[i].reserved.some(
           (el) =>
-            el.date.getTime() === data.date.getTime() && el.start == data.start
+            el.date.getTime() === new Date(data.date).getTime() &&
+            el.start == data.start
         );
+        console.log(found);
       } else if (data.date != null && data.start == null) {
         let count = 0;
         rooms[i].reserved.array.forEach((element) => {
@@ -67,7 +69,7 @@ export class RoomsService {
         found = count == 6;
       }
       if (found) {
-        rooms.slice(i, 1);
+        rooms.splice(i, 1);
       }
     }
 
