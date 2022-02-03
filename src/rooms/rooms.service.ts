@@ -55,7 +55,10 @@ export class RoomsService {
       let found = false;
       if (data.date != null && data.start != null) {
         for (let element of rooms[i].reserved) {
-          if (element.date.getTime() === new Date(data.date).getTime()) {
+          if (
+            element.date.getTime() === new Date(data.date).getTime() &&
+            element.cancelled == false
+          ) {
             for (let j = 0; j < element.periods.length; j++) {
               if (element.periods[j].start == data.start) found = !found;
             }
