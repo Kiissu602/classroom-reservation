@@ -40,11 +40,11 @@ export class RoomsController {
     @Res() response: Response
   ) {
     const data: SearchRoomDto = {
-      number: number == "null" ? null : number,
-      date: date.toString() == "null" ? null : date,
-      start: start == "undefined" ? null : start,
-      end: end == "undefined" ? null : end,
-      type: type.toString() == "null" ? null : type,
+      number: number == "null" || number == "" ? null : number,
+      date: date.toString() == "null" || date.toString() == "" ? null : date,
+      start: start == "undefined" || start == "" ? null : start,
+      end: end == "undefined" || end == "" ? null : end,
+      type: type.toString() == "null" || type.toString() == "" ? null : type,
     };
 
     const rooms = await this._roomsService.searchRoom(data);

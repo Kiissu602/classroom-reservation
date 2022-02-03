@@ -74,7 +74,9 @@ export class ReserveService {
 
     for (const element of allReserve) {
       const found = reserved.some(
-        (el) => el.date.getTime() === element.date.getTime()
+        (el) =>
+          el.date.getTime() === element.date.getTime() &&
+          el.cancelled == element.cancelled
       );
 
       if (found) {
