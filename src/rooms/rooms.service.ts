@@ -56,12 +56,16 @@ export class RoomsService {
         found = rooms[i].reserved.some(
           (el) =>
             el.date.getTime() === new Date(data.date).getTime() &&
-            el.start == data.start
+            el.start == data.start &&
+            el.canclled == false
         );
       } else if (data.date != null && data.start == null) {
         let count = 0;
         rooms[i].reserved.array.forEach((element) => {
-          if (element.date.getTime() === data.date.getTime()) {
+          if (
+            element.date.getTime() === data.date.getTime() &&
+            element.canclled == false
+          ) {
             count++;
           }
         });
