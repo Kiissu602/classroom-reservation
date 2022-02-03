@@ -10,19 +10,18 @@ export const ReserveSchema = new mongoose.Schema({
     type: Date,
     required: [true, "please input Date"],
   },
-  start: {
-    type: String,
-    required: [true, "please input start time"],
-  },
-  end: {
-    type: String,
-    required: [true, "please input end time"],
+  periods: {
+    type: [],
+    required: [true, "please input time"],
   },
   phone: {
     type: String,
     required: [true, "please input phone number"],
   },
-
+  createAt: {
+    type: Date,
+    default: new Date(),
+  },
   password: { type: String, required: [true, "please input your password"] },
   email: { type: String, required: [true, "please input your email"] },
   description: String,

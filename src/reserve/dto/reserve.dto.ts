@@ -1,8 +1,10 @@
+import { Period } from "../interfaces/reserve.interface";
+
 export class createReservesDto {
   roomId: string;
   by: string;
   date: Date;
-  time: [reservePreriod];
+  periods: reservePreriod[];
   description: string;
   password: string;
   phone: string;
@@ -13,8 +15,7 @@ export class reserveDto {
   roomId: string;
   by: string;
   date: Date;
-  start: string;
-  end: string;
+  periods: reservePreriod[];
   description: string;
   password: string;
   phone: string;
@@ -31,7 +32,7 @@ export class editReserveDto {
 export class reserveData {
   roomId: string;
   date: Date;
-  time: reservePreriod[];
+  periods: reservePreriod[];
 }
 
 export class reservePreriod {
@@ -53,8 +54,7 @@ export class getReserveDto {
   date: Date;
   name: string;
   roomNumber: string;
-  times: string[];
-  _ids: string[];
+  periods: Period[];
   description: string;
   cancelled: boolean;
 }

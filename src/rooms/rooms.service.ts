@@ -3,7 +3,7 @@ import { Injectable, Inject } from "@nestjs/common";
 
 import { Room } from "./interfaces/room.interface";
 import * as r from "./dto/room.dto";
-import { Reserve } from "src/reserve/interfaces/reserve.interface";
+import { Period, Reserve } from "src/reserve/interfaces/reserve.interface";
 
 @Injectable()
 export class RoomsService {
@@ -34,6 +34,7 @@ export class RoomsService {
 
   async searchRoom(data: r.SearchRoomDto): Promise<Room[]> {
     let rooms = [];
+
     if (data.number == null && data.type == null) {
       rooms = await this._roomModel.find();
     } else if (data.number != null && data.type == null) {
@@ -53,23 +54,15 @@ export class RoomsService {
     for (let i = 0; i < rooms.length; i++) {
       let found = false;
       if (data.date != null && data.start != null) {
-        found = rooms[i].reserved.some(
-          (el) =>
-            el.date.getTime() === new Date(data.date).getTime() &&
-            el.start == data.start &&
-            el.canclled == false
-        );
-      } else if (data.date != null && data.start == null) {
-        let count = 0;
-        rooms[i].reserved.array.forEach((element) => {
-          if (
-            element.date.getTime() === data.date.getTime() &&
-            element.canclled == false
-          ) {
-            count++;
+        for (let element of rooms[i].reserved) {
+          if (element.date.getTime() === new Date(data.date).getTime()) {
+            for (let j = 0; j < element.periods.length; j++) {
+              if (element.periods[j].start == data.start) found = !found;
+            }
           }
-        });
-        found = count == 6;
+        }
+      } else if (data.date != null && data.start == null) {
+        found = rooms[i].reserved.periods.length == 6;
       }
       if (found) {
         rooms.splice(i, 1);
