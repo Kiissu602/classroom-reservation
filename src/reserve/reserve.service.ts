@@ -70,12 +70,15 @@ export class ReserveService {
       .limit(100);
 
     let result = [];
+
     for (let element of allReserve) {
+      const room = await this._roomModel.findById(element.roomId);
+
       const reserved: rs.getReserveDto = {
         _id: element._id,
         name: element.by,
         date: element.date,
-        roomNumber: (await this._roomModel.findById(element.roomId)).number,
+        roomNumber: room.number,
         description: element.description,
         cancelled: element.cancelled,
         periods: element.periods,
