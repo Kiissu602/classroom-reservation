@@ -58,7 +58,6 @@ export class RoomsService {
             el.date.getTime() === new Date(data.date).getTime() &&
             el.start == data.start
         );
-        console.log(found);
       } else if (data.date != null && data.start == null) {
         let count = 0;
         rooms[i].reserved.array.forEach((element) => {
