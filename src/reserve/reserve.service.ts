@@ -38,30 +38,27 @@ export class ReserveService {
   }
 
   async cancelReserve(cancelData: rs.cancelReserveDto): Promise<string> {
-    if (
-      (await this._reserveModel.findById(cancelData._ids[0])).password !=
-      cancelData.password
-    ) {
+    const reserve = await this._reserveModel.findById(cancelData._id);
+
+    if (reserve.password != cancelData.password) {
       return "Fail wrong password";
     }
-    for (let i = 0; i < cancelData._ids.length; i++) {
-      const cancelled = await this._reserveModel.findOneAndUpdate(
-        { _id: cancelData._ids[i] },
-        { cancelled: true }
-      );
-      await cancelled.save();
-      const room = await this._roomModel.findById(cancelled.roomId);
+    const cancelled = await this._reserveModel.findOneAndUpdate(
+      { _id: cancelData._id },
+      { cancelled: true }
+    );
+    await cancelled.save();
 
-      const idx = room.reserved.findIndex(
-        (r) => r._id.toString() == cancelled.id.toString()
-      );
-      room.reserved[idx].cancelled = true;
-      const updatedRoom = await this._roomModel.findOneAndUpdate(
-        { _id: cancelled.roomId },
-        { reserved: room.reserved }
-      );
-      await updatedRoom.save();
-    }
+    const room = await this._roomModel.findById(cancelled.roomId);
+    const idx = room.reserved.findIndex(
+      (r) => r._id.toString() == cancelled.id.toString()
+    );
+    room.reserved[idx].cancelled = true;
+    const updatedRoom = await this._roomModel.findOneAndUpdate(
+      { _id: cancelled.roomId },
+      { reserved: room.reserved }
+    );
+    await updatedRoom.save();
 
     return "Success";
   }
@@ -71,10 +68,11 @@ export class ReserveService {
       .find()
       .sort({ $natural: -1 })
       .limit(100);
-    console.log(allReserve);
+
     let result = [];
     for (let element of allReserve) {
       const reserved: rs.getReserveDto = {
+        _id: element._id,
         name: element.by,
         date: element.date,
         roomNumber: (await this._roomModel.findById(element.roomId)).number,

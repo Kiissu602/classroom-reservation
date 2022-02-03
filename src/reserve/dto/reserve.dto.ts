@@ -51,6 +51,7 @@ export class freeTimeDto {
 }
 
 export class getReserveDto {
+  _id: string;
   date: Date;
   name: string;
   roomNumber: string;
@@ -61,5 +62,5 @@ export class getReserveDto {
 
 export class cancelReserveDto {
   password: string;
-  _ids: string[];
+  _id: string;
 }
