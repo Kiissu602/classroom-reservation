@@ -35,14 +35,15 @@ export class ReserveController {
     @Res() response: Response
   ) {
     const searchData: rs.searchReserveDto = {
-      name: name == null || name == "" ? null : name,
+      name: name == "null" || name == "" ? null : name,
       number: number == "null" || number == "" ? null : number,
       date: date.toString() == "null" || date.toString() == "" ? null : date,
-      start: start == "undefined" || start == "" ? null : start,
-      end: end == "undefined" || end == "" ? null : end,
+      start: start == "null" || start == "" ? null : start,
+      end: end == "null" || end == "" ? null : end,
     };
 
-    const reserved = this._reserveService.searchReserve(searchData);
+    const reserved = await this._reserveService.searchReserve(searchData);
+
     response.send(reserved);
   }
   @Get("freeTime/:id/:date")

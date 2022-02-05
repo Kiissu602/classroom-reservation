@@ -90,12 +90,14 @@ export class ReserveService {
 
   async searchReserve(data: rs.searchReserveDto): Promise<rs.getReserveDto[]> {
     let reserved = [];
+    console.log(data);
+
     if (data.number != null) {
       reserved = await this._searchByNumber(data);
     } else if (data.name != null && data.date != null && data.start != null) {
       const res = await this._reserveModel
         .find({
-          name: { $regex: data.name },
+          by: { $regex: data.name },
           date: new Date(data.date),
         })
         .sort({ $natural: -1 })
@@ -118,7 +120,7 @@ export class ReserveService {
     } else if (data.name != null && data.date != null) {
       const res = await this._reserveModel
         .find({
-          name: { $regex: data.name },
+          by: { $regex: data.name },
           date: new Date(data.date),
         })
         .sort({ $natural: -1 })
@@ -138,10 +140,11 @@ export class ReserveService {
     } else if (data.name != null) {
       const res = await this._reserveModel
         .find({
-          name: { $regex: data.name },
+          by: { $regex: data.name },
         })
         .sort({ $natural: -1 })
         .limit(50);
+
       for (let r of res) {
         const reserve: rs.getReserveDto = {
           _id: r._id,
@@ -164,6 +167,7 @@ export class ReserveService {
     data: rs.searchReserveDto
   ): Promise<rs.getReserveDto[]> {
     let reserved = [];
+    data.number = data.number.toUpperCase();
     let rooms = await this._roomModel.find({
       number: { $regex: data.number },
     });
