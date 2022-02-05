@@ -88,6 +88,139 @@ export class ReserveService {
     return result;
   }
 
+  async searchReserve(data: rs.searchReserveDto): Promise<rs.getReserveDto[]> {
+    let reserved = [];
+    if (data.number != null) {
+      reserved = await this._searchByNumber(data);
+    } else if (data.name != null && data.date != null && data.start != null) {
+      const res = await this._reserveModel.find({
+        name: { $regex: data.name },
+        date: new Date(data.date),
+      });
+      for (let r of res) {
+        const found = r.periods.some((p) => p.start == data.start);
+        if (found) {
+          const reserve: rs.getReserveDto = {
+            _id: r._id,
+            date: r.date,
+            name: r.by,
+            roomNumber: (await this._roomModel.findById(r.roomId)).number,
+            periods: r.periods,
+            description: r.description,
+            cancelled: r.cancelled,
+          };
+          reserved.push(reserve);
+        }
+      }
+    } else if (data.name != null && data.date != null) {
+      const res = await this._reserveModel.find({
+        name: { $regex: data.name },
+        date: new Date(data.date),
+      });
+      for (let r of res) {
+        const reserve: rs.getReserveDto = {
+          _id: r._id,
+          date: r.date,
+          name: r.by,
+          roomNumber: (await this._roomModel.findById(r.roomId)).number,
+          periods: r.periods,
+          description: r.description,
+          cancelled: r.cancelled,
+        };
+        reserved.push(reserve);
+      }
+    } else if (data.name != null) {
+      const res = await this._reserveModel.find({
+        name: { $regex: data.name },
+      });
+      for (let r of res) {
+        const reserve: rs.getReserveDto = {
+          _id: r._id,
+          date: r.date,
+          name: r.by,
+          roomNumber: (await this._roomModel.findById(r.roomId)).number,
+          periods: r.periods,
+          description: r.description,
+          cancelled: r.cancelled,
+        };
+        reserved.push(reserve);
+      }
+    } else {
+      return await this.getAllReserve();
+    }
+    return reserved;
+  }
+
+  private async _searchByNumber(
+    data: rs.searchReserveDto
+  ): Promise<rs.getReserveDto[]> {
+    let reserved = [];
+    let rooms = await this._roomModel.find({
+      number: { $regex: data.number },
+    });
+    for (let room of rooms) {
+      if (data.name != null && data.date != null && data.start != null) {
+        room.reserved.forEach((r) => {
+          const haveStart = r.periods.some((p) => p.start == data.start);
+          if (
+            r.by == data.name &&
+            r.date.getTime() == new Date(data.date).getTime() &&
+            haveStart
+          ) {
+            const reserve: rs.getReserveDto = {
+              _id: r._id,
+              date: r.date,
+              name: r.by,
+              roomNumber: room.number,
+              periods: r.periods,
+              description: r.description,
+              cancelled: r.cancelled,
+            };
+            reserved.push(reserve);
+          }
+        });
+      } else if (data.name != null && data.date != null && data.start == null) {
+        room.reserved.forEach((r) => {
+          if (
+            r.by == data.name &&
+            r.date.getTime() == new Date(data.date).getTime()
+          ) {
+            const reserve: rs.getReserveDto = {
+              _id: r._id,
+              date: r.date,
+              name: r.by,
+              roomNumber: room.number,
+              periods: r.periods,
+              description: r.description,
+              cancelled: r.cancelled,
+            };
+            reserved.push(reserve);
+          }
+        });
+      } else if (data.name != null && data.date == null && data.start == null) {
+        room.reserved.forEach((r) => {
+          if (r.by == data.name) {
+            reserved.push(r);
+          }
+        });
+      } else {
+        room.reserved.forEach((r) => {
+          const reserve: rs.getReserveDto = {
+            _id: r._id,
+            date: r.date,
+            name: r.by,
+            roomNumber: room.number,
+            periods: r.periods,
+            description: r.description,
+            cancelled: r.cancelled,
+          };
+          reserved.push(reserve);
+        });
+      }
+    }
+    return reserved;
+  }
+
   async getFreeTime(requireTime: rs.getFreeTimeDto): Promise<rs.freeTimeDto[]> {
     let alllFreeTime = [
       { start: "8.00", end: "9.30" },

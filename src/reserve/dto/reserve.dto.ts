@@ -64,3 +64,11 @@ export class cancelReserveDto {
   password: string;
   _id: string;
 }
+
+export class searchReserveDto {
+  name: string;
+  number: string;
+  date: Date;
+  start: string;
+  end: string;
+}
