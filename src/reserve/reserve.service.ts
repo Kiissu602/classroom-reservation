@@ -67,7 +67,7 @@ export class ReserveService {
     const allReserve = await this._reserveModel
       .find()
       .sort({ $natural: -1 })
-      .limit(100);
+      .limit(50);
 
     let result = [];
 
@@ -93,10 +93,13 @@ export class ReserveService {
     if (data.number != null) {
       reserved = await this._searchByNumber(data);
     } else if (data.name != null && data.date != null && data.start != null) {
-      const res = await this._reserveModel.find({
-        name: { $regex: data.name },
-        date: new Date(data.date),
-      });
+      const res = await this._reserveModel
+        .find({
+          name: { $regex: data.name },
+          date: new Date(data.date),
+        })
+        .sort({ $natural: -1 })
+        .limit(50);
       for (let r of res) {
         const found = r.periods.some((p) => p.start == data.start);
         if (found) {
@@ -113,10 +116,13 @@ export class ReserveService {
         }
       }
     } else if (data.name != null && data.date != null) {
-      const res = await this._reserveModel.find({
-        name: { $regex: data.name },
-        date: new Date(data.date),
-      });
+      const res = await this._reserveModel
+        .find({
+          name: { $regex: data.name },
+          date: new Date(data.date),
+        })
+        .sort({ $natural: -1 })
+        .limit(50);
       for (let r of res) {
         const reserve: rs.getReserveDto = {
           _id: r._id,
@@ -130,9 +136,12 @@ export class ReserveService {
         reserved.push(reserve);
       }
     } else if (data.name != null) {
-      const res = await this._reserveModel.find({
-        name: { $regex: data.name },
-      });
+      const res = await this._reserveModel
+        .find({
+          name: { $regex: data.name },
+        })
+        .sort({ $natural: -1 })
+        .limit(50);
       for (let r of res) {
         const reserve: rs.getReserveDto = {
           _id: r._id,
