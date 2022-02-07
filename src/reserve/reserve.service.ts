@@ -272,18 +272,19 @@ export class ReserveService {
 
   private async _alreadyReserved(data: rs.reserveData): Promise<string[]> {
     let message = [];
+    const reserved = await this._reserveModel.find({
+      roomId: data.roomId,
+      date: data.date,
+      cancelled: false,
+    });
 
-    for (let i = 0; i < data.periods.length; i++) {
-      const reserved = await this._reserveModel.exists({
-        roomId: data.roomId,
-        date: data.date,
-        periods: data.periods,
-        cancelled: false,
+    for (let res of reserved) {
+      data.periods.forEach((p) => {
+        const found = res.periods.some((r) => r.start == p.start);
+        if (found) {
+          message.push(`'${p.start}' - '${p.end}'`);
+        }
       });
-
-      if (reserved) {
-        message.push(`'${data.periods[i].start}' - '${data.periods[i].end}'`);
-      }
     }
 
     return message;
