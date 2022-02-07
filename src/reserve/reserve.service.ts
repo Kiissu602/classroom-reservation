@@ -41,7 +41,7 @@ export class ReserveService {
     const reserve = await this._reserveModel.findById(cancelData._id);
 
     if (reserve.password != cancelData.password) {
-      return "Fail wrong password";
+      return "Fail password is incorrect, please try again";
     }
     const cancelled = await this._reserveModel.findOneAndUpdate(
       { _id: cancelData._id },
