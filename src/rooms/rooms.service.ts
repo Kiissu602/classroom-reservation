@@ -27,49 +27,33 @@ export class RoomsService {
   }
 
   async getRooms(): Promise<Room[]> {
-    return await (
-      await this._roomModel.find().exec()
-    ).sort((a, b) => (a.number > b.number ? 1 : -1));
+    return (await this._roomModel.find().exec()).sort((a, b) =>
+      a.number > b.number ? 1 : -1
+    );
   }
 
   async searchRoom(data: r.SearchRoomDto): Promise<Room[]> {
-    let rooms = [];
+    data.number = data.number?.toUpperCase();
 
-    if (data.number == null && data.type == null) {
-      rooms = await this._roomModel.find();
-    } else if (data.number != null && data.type == null) {
-      data.number = data.number.toUpperCase();
-      rooms = await this._roomModel.find({
-        number: { $regex: data.number },
-      });
-    } else if (data.number == null && data.type != null) {
-      rooms = await this._roomModel.find({ type: r.roomType[data.type] });
-    } else {
-      rooms = await this._roomModel.find({
-        number: { $regex: data.number },
-        type: r.roomType[data.type],
-      });
-    }
+    let rooms = await this._roomModel.find({
+      number: data.number == null ? { $ne: null } : { $regex: data.number },
+      type:
+        data.type == null ? { $ne: null } : r.roomType[data.type].toString(),
+    });
 
     for (let i = 0; i < rooms.length; i++) {
       let found = false;
       if (data.date != null && data.start != null) {
-        for (let element of rooms[i].reserved) {
-          if (
-            element.date.getTime() === new Date(data.date).getTime() &&
-            element.cancelled == false
-          ) {
-            for (let j = 0; j < element.periods.length; j++) {
-              if (element.periods[j].start == data.start) found = !found;
-            }
-          }
-        }
+        const periods = { start: data.start, end: data.end };
+        rooms[i].reserved.forEach((r) => {
+          found = r.periods.some((p) => p == periods);
+        });
       } else if (data.date != null && data.start == null) {
-        found = rooms[i].reserved.periods.length == 6;
+        rooms[i].reserved.forEach((r) => {
+          found = r.periods.length == 6;
+        });
       }
-      if (found) {
-        rooms.splice(i, 1);
-      }
+      if (found) rooms.splice(i, 1);
     }
 
     return rooms;

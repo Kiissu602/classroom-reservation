@@ -90,75 +90,30 @@ export class ReserveService {
 
   async searchReserve(data: rs.searchReserveDto): Promise<rs.getReserveDto[]> {
     let reserved = [];
-    console.log(data);
-
+    const periods = [{ start: data.start, end: data.end }];
     if (data.number != null) {
       reserved = await this._searchByNumber(data);
-    } else if (data.name != null && data.date != null && data.start != null) {
-      const res = await this._reserveModel
-        .find({
-          by: { $regex: data.name },
-          date: new Date(data.date),
-        })
-        .sort({ $natural: -1 })
-        .limit(50);
-      for (let r of res) {
-        const found = r.periods.some((p) => p.start == data.start);
-        if (found) {
-          const reserve: rs.getReserveDto = {
-            _id: r._id,
-            date: r.date,
-            name: r.by,
-            roomNumber: (await this._roomModel.findById(r.roomId)).number,
-            periods: r.periods,
-            description: r.description,
-            cancelled: r.cancelled,
-          };
-          reserved.push(reserve);
-        }
-      }
-    } else if (data.name != null && data.date != null) {
-      const res = await this._reserveModel
-        .find({
-          by: { $regex: data.name },
-          date: new Date(data.date),
-        })
-        .sort({ $natural: -1 })
-        .limit(50);
-      for (let r of res) {
-        const reserve: rs.getReserveDto = {
-          _id: r._id,
-          date: r.date,
-          name: r.by,
-          roomNumber: (await this._roomModel.findById(r.roomId)).number,
-          periods: r.periods,
-          description: r.description,
-          cancelled: r.cancelled,
-        };
-        reserved.push(reserve);
-      }
-    } else if (data.name != null) {
-      const res = await this._reserveModel
-        .find({
-          by: { $regex: data.name },
-        })
-        .sort({ $natural: -1 })
-        .limit(50);
-
-      for (let r of res) {
-        const reserve: rs.getReserveDto = {
-          _id: r._id,
-          date: r.date,
-          name: r.by,
-          roomNumber: (await this._roomModel.findById(r.roomId)).number,
-          periods: r.periods,
-          description: r.description,
-          cancelled: r.cancelled,
-        };
-        reserved.push(reserve);
-      }
     } else {
-      return await this.getAllReserve();
+      const reserve = await this._reserveModel.find({
+        name: { $regex: data.name },
+        date: data.date ?? { $ne: null },
+        periods:
+          data.start == null
+            ? { $ne: null }
+            : { $in: [{ start: data.start, end: data.end }] },
+      });
+      for (let r of reserve) {
+        const res: rs.getReserveDto = {
+          _id: r._id,
+          date: r.date,
+          name: r.by,
+          roomNumber: (await this._roomModel.findById(r.roomId)).number,
+          periods: r.periods,
+          description: r.description,
+          cancelled: r.cancelled,
+        };
+        reserved.push(res);
+      }
     }
     return reserved;
   }

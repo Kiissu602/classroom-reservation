@@ -39,12 +39,15 @@ export class RoomsController {
     @Param("type") type: number,
     @Res() response: Response
   ) {
+    console.log(type);
+
     const data: SearchRoomDto = {
       number: number == "null" || number == "" ? null : number,
       date: date.toString() == "null" || date.toString() == "" ? null : date,
-      start: start == "undefined" || start == "" ? null : start,
-      end: end == "undefined" || end == "" ? null : end,
-      type: type.toString() == "null" || type.toString() == "" ? null : type,
+      start: start == "null" || start == "" ? null : start,
+      end: end == "null" || end == "" ? null : end,
+      type:
+        type.toString() == "null" || type.toString() == "" ? null : type - 1,
     };
 
     const rooms = await this._roomsService.searchRoom(data);
