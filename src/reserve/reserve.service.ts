@@ -96,7 +96,7 @@ export class ReserveService {
     } else {
       const reserve = await this._reserveModel
         .find({
-          name: { $regex: data.name },
+          by: { $regex: data.name },
           date: data.date ?? { $ne: null },
           periods:
             data.start == null
@@ -105,6 +105,7 @@ export class ReserveService {
         })
         .sort({ $natural: -1 })
         .limit(100);
+
       for (let r of reserve) {
         const res: rs.getReserveDto = {
           _id: r._id,
@@ -134,7 +135,7 @@ export class ReserveService {
     for (let room of rooms) {
       const reserve = await this._reserveModel
         .find({
-          name: { $regex: data.name },
+          by: { $regex: data.name },
           roomId: room._id,
           date: data.date ?? { $ne: null },
           periods:
