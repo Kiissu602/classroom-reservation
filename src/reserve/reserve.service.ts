@@ -67,7 +67,7 @@ export class ReserveService {
     const allReserve = await this._reserveModel
       .find()
       .sort({ $natural: -1 })
-      .limit(50);
+      .limit(100);
 
     let result = [];
 
@@ -94,14 +94,17 @@ export class ReserveService {
     if (data.number != null) {
       reserved = await this._searchByNumber(data);
     } else {
-      const reserve = await this._reserveModel.find({
-        name: { $regex: data.name },
-        date: data.date ?? { $ne: null },
-        periods:
-          data.start == null
-            ? { $ne: null }
-            : { $in: [{ start: data.start, end: data.end }] },
-      });
+      const reserve = await this._reserveModel
+        .find({
+          name: { $regex: data.name },
+          date: data.date ?? { $ne: null },
+          periods:
+            data.start == null
+              ? { $ne: null }
+              : { $in: [{ start: data.start, end: data.end }] },
+        })
+        .sort({ $natural: -1 })
+        .limit(100);
       for (let r of reserve) {
         const res: rs.getReserveDto = {
           _id: r._id,
@@ -123,68 +126,36 @@ export class ReserveService {
   ): Promise<rs.getReserveDto[]> {
     let reserved = [];
     data.number = data.number.toUpperCase();
+
     let rooms = await this._roomModel.find({
       number: { $regex: data.number },
     });
+
     for (let room of rooms) {
-      if (data.name != null && data.date != null && data.start != null) {
-        room.reserved.forEach((r) => {
-          const haveStart = r.periods.some((p) => p.start == data.start);
-          if (
-            r.by == data.name &&
-            r.date.getTime() == new Date(data.date).getTime() &&
-            haveStart
-          ) {
-            const reserve: rs.getReserveDto = {
-              _id: r._id,
-              date: r.date,
-              name: r.by,
-              roomNumber: room.number,
-              periods: r.periods,
-              description: r.description,
-              cancelled: r.cancelled,
-            };
-            reserved.push(reserve);
-          }
-        });
-      } else if (data.name != null && data.date != null && data.start == null) {
-        room.reserved.forEach((r) => {
-          if (
-            r.by == data.name &&
-            r.date.getTime() == new Date(data.date).getTime()
-          ) {
-            const reserve: rs.getReserveDto = {
-              _id: r._id,
-              date: r.date,
-              name: r.by,
-              roomNumber: room.number,
-              periods: r.periods,
-              description: r.description,
-              cancelled: r.cancelled,
-            };
-            reserved.push(reserve);
-          }
-        });
-      } else if (data.name != null && data.date == null && data.start == null) {
-        room.reserved.forEach((r) => {
-          if (r.by == data.name) {
-            reserved.push(r);
-          }
-        });
-      } else {
-        room.reserved.forEach((r) => {
-          const reserve: rs.getReserveDto = {
-            _id: r._id,
-            date: r.date,
-            name: r.by,
-            roomNumber: room.number,
-            periods: r.periods,
-            description: r.description,
-            cancelled: r.cancelled,
-          };
-          reserved.push(reserve);
-        });
-      }
+      const reserve = await this._reserveModel
+        .find({
+          name: { $regex: data.name },
+          roomId: room._id,
+          date: data.date ?? { $ne: null },
+          periods:
+            data.start == null
+              ? { $ne: null }
+              : { $in: [{ start: data.start, end: data.end }] },
+        })
+        .sort({ $natural: -1 })
+        .limit(100);
+      reserve.forEach((r) => {
+        const res: rs.getReserveDto = {
+          _id: r._id,
+          date: r.date,
+          name: r.by,
+          roomNumber: room.number,
+          periods: r.periods,
+          description: r.description,
+          cancelled: r.cancelled,
+        };
+        reserved.push(res);
+      });
     }
     return reserved;
   }
