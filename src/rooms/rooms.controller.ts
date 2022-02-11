@@ -39,8 +39,6 @@ export class RoomsController {
     @Param("type") type: number,
     @Res() response: Response
   ) {
-    console.log(type);
-
     const data: SearchRoomDto = {
       number: number == "null" || number == "" ? null : number,
       date: date.toString() == "null" || date.toString() == "" ? null : date,

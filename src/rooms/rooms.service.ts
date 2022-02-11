@@ -44,13 +44,17 @@ export class RoomsService {
     for (let i = 0; i < rooms.length; i++) {
       let found = false;
       if (data.date != null && data.start != null) {
-        const periods = { start: data.start, end: data.end };
         rooms[i].reserved.forEach((r) => {
-          found = r.periods.some((p) => p == periods);
+          if (r.date.getTime() == new Date(data.date).getTime()) {
+            return (found =
+              r.periods.length == 6 ||
+              r.periods.some((p) => p.start == data.start));
+          }
         });
       } else if (data.date != null && data.start == null) {
         rooms[i].reserved.forEach((r) => {
-          found = r.periods.length == 6;
+          if (r.date.getTime() == new Date(data.date).getTime())
+            return (found = r.periods.length == 6);
         });
       }
       if (found) rooms.splice(i, 1);
