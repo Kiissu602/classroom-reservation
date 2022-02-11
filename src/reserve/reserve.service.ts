@@ -96,7 +96,7 @@ export class ReserveService {
     } else {
       const reserve = await this._reserveModel
         .find({
-          by: { $regex: data.name },
+          by: data.name == null ? { $ne: null } : { $regex: data.name },
           date: data.date ?? { $ne: null },
           periods:
             data.start == null
@@ -129,13 +129,14 @@ export class ReserveService {
     data.number = data.number.toUpperCase();
 
     let rooms = await this._roomModel.find({
-      number: { $regex: data.number },
+      number: data.number == null ? { $ne: null } : { $regex: data.number },
     });
+    console.log(data);
 
     for (let room of rooms) {
       const reserve = await this._reserveModel
         .find({
-          by: { $regex: data.name },
+          by: data.name == null ? { $ne: null } : { $regex: data.name },
           roomId: room._id,
           date: data.date ?? { $ne: null },
           periods:
