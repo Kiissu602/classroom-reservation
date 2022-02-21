@@ -42,7 +42,10 @@ export class RoomsService {
       let found = false;
       if (data.date != null && data.start != null) {
         rooms[i].reserved.forEach((r) => {
-          if (r.date.getTime() == new Date(data.date).getTime()) {
+          if (
+            r.date.getTime() == new Date(data.date).getTime() &&
+            r.cancelled == false
+          ) {
             return (found =
               r.periods.length == 6 ||
               r.periods.some((p) => p.start == data.start));
@@ -50,10 +53,14 @@ export class RoomsService {
         });
       } else if (data.date != null && data.start == null) {
         rooms[i].reserved.forEach((r) => {
-          if (r.date.getTime() == new Date(data.date).getTime())
+          if (
+            r.date.getTime() == new Date(data.date).getTime() &&
+            r.cancelled == false
+          )
             return (found = r.periods.length == 6);
         });
       }
+
       if (found) rooms.splice(i, 1);
     }
 

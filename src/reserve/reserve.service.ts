@@ -173,13 +173,13 @@ export class ReserveService {
     ];
 
     let freeTime = [];
-    const room = await this._roomModel.findById(requireTime.id);
     const reserved = await this._reserveModel.find({
       roomId: requireTime.id,
       date: requireTime.date,
       cancelled: false,
     });
-    for (let res of room.reserved) {
+
+    for (let res of reserved) {
       alllFreeTime.forEach((t, index) => {
         if (res.periods.some((p) => p.start == t.start)) {
           alllFreeTime.splice(index, 1);
@@ -194,6 +194,7 @@ export class ReserveService {
       };
       freeTime.push(time);
     }
+    console.log(freeTime);
 
     return freeTime;
   }
