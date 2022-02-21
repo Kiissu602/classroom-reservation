@@ -8,8 +8,7 @@ import {
   Req,
   Res,
 } from "@nestjs/common";
-import { Request, response, Response } from "express";
-import { start } from "repl";
+import { Request, Response } from "express";
 
 import * as rs from "./dto/reserve.dto";
 
@@ -26,7 +25,7 @@ export class ReserveController {
   }
 
   @Get("search/:name/:number/:date/:start/:end")
-  async searchRoom(
+  async searchReserve(
     @Param("name") name: string,
     @Param("number") number: string,
     @Param("date") date: Date,
@@ -46,6 +45,7 @@ export class ReserveController {
 
     response.send(reserved);
   }
+
   @Get("freeTime/:id/:date")
   async getFreeTime(
     @Param("id") id: string,

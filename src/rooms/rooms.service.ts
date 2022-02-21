@@ -3,15 +3,12 @@ import { Injectable, Inject } from "@nestjs/common";
 
 import { Room } from "./interfaces/room.interface";
 import * as r from "./dto/room.dto";
-import { Period, Reserve } from "src/reserve/interfaces/reserve.interface";
 
 @Injectable()
 export class RoomsService {
   constructor(
     @Inject("ROOM_MODEL")
-    private _roomModel: Model<Room>,
-    @Inject("RESERVE_MODEL")
-    private _reserveModel: Model<Reserve>
+    private _roomModel: Model<Room>
   ) {}
 
   async createRoom(createRoomDto: r.CreateRoomDto): Promise<Room> {

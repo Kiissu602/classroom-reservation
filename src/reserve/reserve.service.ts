@@ -1,5 +1,5 @@
-import { Get, Inject, Injectable } from "@nestjs/common";
-import { Model, Promise } from "mongoose";
+import { Inject, Injectable } from "@nestjs/common";
+import { Model } from "mongoose";
 import { Reserve } from "./interfaces/reserve.interface";
 import * as rs from "./dto/reserve.dto";
 import { Room } from "src/rooms/interfaces/room.interface";
@@ -41,7 +41,7 @@ export class ReserveService {
     const reserve = await this._reserveModel.findById(cancelData._id);
 
     if (reserve.password != cancelData.password) {
-      return "Fail password is incorrect, please try again";
+      return "Fail code is incorrect, please try again";
     }
     const cancelled = await this._reserveModel.findOneAndUpdate(
       { _id: cancelData._id },
