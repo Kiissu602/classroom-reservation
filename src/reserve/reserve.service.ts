@@ -81,8 +81,11 @@ export class ReserveService {
         roomNumber: room.number,
         description: element.description,
         cancelled: element.cancelled,
-        periods: element.periods,
+        periods: element.periods.sort((a, b) =>
+          this.setTime(a.start) > this.setTime(b.start) ? 1 : -1
+        ),
       };
+
       result.push(reserved);
     }
     return result;
@@ -112,7 +115,9 @@ export class ReserveService {
           date: r.date,
           name: r.by,
           roomNumber: (await this._roomModel.findById(r.roomId)).number,
-          periods: r.periods,
+          periods: r.periods.sort((a, b) =>
+            this.setTime(a.start) > this.setTime(b.start) ? 1 : -1
+          ),
           description: r.description,
           cancelled: r.cancelled,
         };
@@ -152,7 +157,9 @@ export class ReserveService {
           date: r.date,
           name: r.by,
           roomNumber: room.number,
-          periods: r.periods,
+          periods: r.periods.sort((a, b) =>
+            this.setTime(a.start) > this.setTime(b.start) ? 1 : -1
+          ),
           description: r.description,
           cancelled: r.cancelled,
         };
@@ -163,7 +170,7 @@ export class ReserveService {
   }
 
   async getFreeTime(requireTime: rs.getFreeTimeDto): Promise<rs.freeTimeDto[]> {
-    let alllFreeTime = [
+    let allFreeTime = [
       { start: "8.00", end: "9.30" },
       { start: "9.30", end: "11.00" },
       { start: "11.00", end: "12.30" },
@@ -180,22 +187,21 @@ export class ReserveService {
     });
 
     for (let res of reserved) {
-      alllFreeTime.forEach((t, index) => {
-        if (res.periods.some((p) => p.start == t.start)) {
-          alllFreeTime.splice(index, 1);
+      res.periods.forEach((p) => {
+        const index = allFreeTime.findIndex((f) => f.start == p.start);
+        if (index != -1) {
+          allFreeTime.splice(index, 1);
         }
       });
     }
 
-    for (let j = 0; j < alllFreeTime.length; j++) {
+    for (let j = 0; j < allFreeTime.length; j++) {
       const time: rs.freeTimeDto = {
-        text: `${alllFreeTime[j].start} - ${alllFreeTime[j].end}`,
-        value: { start: alllFreeTime[j].start, end: alllFreeTime[j].end },
+        text: `${allFreeTime[j].start} - ${allFreeTime[j].end}`,
+        value: { start: allFreeTime[j].start, end: allFreeTime[j].end },
       };
       freeTime.push(time);
     }
-    console.log(freeTime);
-
     return freeTime;
   }
 
@@ -249,5 +255,10 @@ export class ReserveService {
     );
     await updateRoom.save();
     return "Success";
+  }
+
+  private setTime(t: string) {
+    let time = t.split(".");
+    return +time[0] + +time[1] / 60;
   }
 }
