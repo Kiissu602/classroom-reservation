@@ -52,12 +52,17 @@ export class RoomsService {
           }
         });
       } else if (data.date != null && data.start == null) {
+        let count = 0;
         rooms[i].reserved.forEach((r) => {
           if (
             r.date.getTime() == new Date(data.date).getTime() &&
             r.cancelled == false
-          )
-            return (found = r.periods.length == 6);
+          ) {
+            count += r.periods.length;
+          }
+          if (count == 6) {
+            return found == true;
+          }
         });
       }
 
