@@ -60,8 +60,9 @@ export class RoomsService {
           ) {
             count += r.periods.length;
           }
+
           if (count == 6) {
-            return found == true;
+            return (found = true);
           }
         });
       }
