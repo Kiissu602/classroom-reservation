@@ -40,19 +40,22 @@ export class RoomsService {
 
     for (let i = 0; i < rooms.length; i++) {
       let found = false;
+      let count = 0;
       if (data.date != null && data.start != null) {
         rooms[i].reserved.forEach((r) => {
           if (
             r.date.getTime() == new Date(data.date).getTime() &&
             r.cancelled == false
           ) {
+            count += r.periods.length;
+            if (r.periods.some((p) => p.start == data.start))
+              return (found = true);
             return (found =
               r.periods.length == 6 ||
               r.periods.some((p) => p.start == data.start));
           }
         });
       } else if (data.date != null && data.start == null) {
-        let count = 0;
         rooms[i].reserved.forEach((r) => {
           if (
             r.date.getTime() == new Date(data.date).getTime() &&
@@ -60,13 +63,9 @@ export class RoomsService {
           ) {
             count += r.periods.length;
           }
-
-          if (count == 6) {
-            return (found = true);
-          }
         });
       }
-
+      found = found == false ? count == 6 : found;
       if (found) rooms.splice(i, 1);
     }
 
